@@ -1,0 +1,25 @@
+% latex2png.com
+
+MCBR(A) = \dfrac{\sum_{u \in G_A}^{} \ell_{u,v} \times (W(A,u) + 0.75 \times u.win\% + 0.25 \times \dfrac{\sum_{v \in G_u} v.win\%}{|G_u|})}{|G_A|}
+
+G_v
+
+\ell_{u,v}
+
+\ell_{u,v} = 
+\left\{
+	\begin{array}{ll}
+		0.90  & \mbox{if } E(u,v)\ was\ played\ at\ home \\
+		0.95 & \mbox{if } E(u,v)\ was\ played\ at\ a\ neutral\ site\\
+		1.00 & \mbox{if } E(u,v)\ was\ played\ away
+	\end{array}
+\right.
+
+W(u,v) = 1 + \Delta score_{u,v} \times 0.01 +
+\left\{
+	\begin{array}{ll}
+		0.05  & \mbox{if } \Delta score_{u,v} > 0 \\
+		0 & \mbox{if } \Delta score_{u,v} = 0\\
+		-0.05 & \mbox{if } \Delta score_{u,v} < 0
+	\end{array}
+\right.
