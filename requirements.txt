@@ -1,0 +1,4 @@
+sportsreference
+sportsdataverse
+neo4j
+typer[all]

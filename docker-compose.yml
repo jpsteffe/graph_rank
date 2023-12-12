@@ -1,0 +1,11 @@
+services:
+  database:
+    image: neo4j
+    container_name: graph-db
+    ports:
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - ./data:/data
+    environment:
+      - NEO4J_AUTH=none
