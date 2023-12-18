@@ -6,24 +6,35 @@ import sportsdataverse
 
 
 def add_game(driver: neo4j.Driver, home_team, home_score, away_team, away_score, neutral_site):
+    home_point_diff = max(min(home_score - away_score, 20), -20)
     if home_score > away_score:
         game_string = """
-        MERGE (away)-[:LOST_TO {location: $location, neutral: $neutral, home_score: $home_score, away_score: $away_score}]->(home)
-        """
+        MERGE (home)-[:WON {location: %s, score: $home_score, opponent_score: $away_score, point_diff: %s}]->(away)
+        MERGE (away)-[:LOST {location: %s, score: $away_score, opponent_score: $home_score, point_diff: %s}]->(home)
+        """ % (
+            "'NEUTRAL'" if neutral_site else "'HOME'",
+            home_point_diff,
+            "'NEUTRAL'" if neutral_site else "'AWAY'",
+            -home_point_diff
+        )
     else:
         game_string = """
-        MERGE (home)-[:LOST_TO {location: $location, neutral: $neutral, home_score: $home_score, away_score: $away_score}]->(away)
-        """
+        MERGE (home)-[:LOST {location: %s, score: $home_score, opponent_score: $away_score, point_diff: %s}]->(away)
+        MERGE (away)-[:WON {location: %s, score: $away_score, opponent_score: $home_score, point_diff: %s}]->(home)
+        """ % (
+            "'NEUTRAL'" if neutral_site else "'HOME'",
+            home_point_diff,
+            "'NEUTRAL'" if neutral_site else "'AWAY'",
+            -home_point_diff
+        )
     driver.execute_query(
         """
         MERGE (home:Team {name: $home_team})
         MERGE (away:Team {name: $away_team})
         """ + game_string,
         home_team=home_team,
-        away_team=away_team,
-        location=home_team,
-        neutral=neutral_site,
         home_score=home_score,
+        away_team=away_team,
         away_score=away_score
     )
 
@@ -43,6 +54,20 @@ def main():
                 game['away_score'],
                 game['neutral_site']
             )
+
+        # Set every team's individual win percentage
+        driver.execute_query(
+            """
+            MATCH (t:Team)
+            MATCH (t)-[g]->()
+            SET t.win_percent = 0.0
+            WITH t, count(g) as games
+            MATCH (t)-[w:WON]->()
+            WITH t, games, count(w) as wins
+            SET t.win_percent = toFloat(wins)/games
+            RETURN t.name, wins, games, toFloat(wins)/games as win_percent
+            """
+        )
 
 
 if __name__ == "__main__":
