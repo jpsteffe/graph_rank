@@ -5,7 +5,7 @@ def main():
     with neo4j.GraphDatabase.driver("neo4j://localhost:7687", auth=None) as driver:
         teams, _, _ = driver.execute_query(
             """
-            match (t:Team) -[g]->()
+            match (t:Team)-[g]->()
             return t, avg(g.mcbr_score) as mcbr_score
             ORDER BY mcbr_score DESC
             """

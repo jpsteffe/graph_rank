@@ -9,3 +9,4 @@ services:
       - ./data:/data
     environment:
       - NEO4J_AUTH=none
+#      - NEO4J_PLUGINS='["graph-data-science"]'
