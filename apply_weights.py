@@ -37,14 +37,13 @@ def mcbr_game_weights(driver, game):
 
 
 def main():
-
     with neo4j.GraphDatabase.driver("neo4j://localhost:7687", auth=None) as driver:
         games, _, _ = driver.execute_query(
             """
+            MATCH (t)-->(o)-->(oo)
+            with o, avg(oo.win_percent) as avg_2nd_order_win_percent
             MATCH (t)-[g]->(o)
-            WITH *
-            MATCH (o)-[]->(oo)
-            RETURN t,g,o,avg(oo.win_percent) as avg_2nd_order_win_percent
+            RETURN t,g,o, avg_2nd_order_win_percent
             """
         )
         for game in games:
