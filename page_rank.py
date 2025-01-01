@@ -52,3 +52,15 @@ def main(max_iterations: int = 20, delta: float = 0.0001, damping: float = 0.85)
 
 if __name__ == "__main__":
     typer.run(main)
+
+"""
+MATCH (t:Team)-[r:LOST]->(o:Team)
+WITH gds.graph.project('teams', t) AS g
+RETURN g.graphName AS graph
+
+CALL gds.pageRank.stream(
+  "teams"
+)
+
+https://neo4j.com/docs/graph-data-science/2.13/algorithms/page-rank/
+"""

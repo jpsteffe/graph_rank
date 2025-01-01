@@ -9,6 +9,4 @@ services:
       - ./data:/data
     environment:
       - NEO4J_AUTH=none
-      - NEO4J_PLUGINS='["graph-data-science"]'
-      - NEO4J_dbms_security_procedures_unrestricted="gds.*"
-      - NEO4J_DEBUG=yes
+      - NEO4J_PLUGINS=["graph-data-science"]
